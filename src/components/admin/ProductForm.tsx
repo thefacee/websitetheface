@@ -8,10 +8,11 @@ import type { Product, ProductCategory, ProductStatus } from '@/lib/supabase/typ
 
 const MAX_IMAGE_MB = 8;
 
-const CATEGORIES: { value: ProductCategory; label: string }[] = [
-  { value: 'table', label: 'Стол' },
-  { value: 'sculpture', label: 'Скульптура' },
-  { value: 'accessory', label: 'Аксессуар' },
+/** Запасной список — если миграция с таблицей categories ещё не выполнена. */
+const FALLBACK_CATEGORIES: { value: string; label: string }[] = [
+  { value: 'table', label: 'Столы' },
+  { value: 'sculpture', label: 'Скульптуры' },
+  { value: 'accessory', label: 'Аксессуары' },
   { value: 'lighting', label: 'Свет' },
 ];
 
@@ -70,6 +71,7 @@ export default function ProductForm({ productId }: { productId?: string }) {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
+  const [categories, setCategories] = useState(FALLBACK_CATEGORIES);
   const [error, setError] = useState('');
   const [dirty, setDirty] = useState(false);
 
@@ -112,6 +114,26 @@ export default function ProductForm({ productId }: { productId?: string }) {
       }
     })();
   }, [productId]);
+
+  // список категорий тянем из базы — его редактирует сам владелец в /admin/categories
+  useEffect(() => {
+    (async () => {
+      try {
+        const supabase = createClient();
+        const { data, error: dbError } = await supabase
+          .from('categories')
+          .select('slug, name_ru, sort_order')
+          .order('sort_order', { ascending: false });
+        if (dbError) throw dbError;
+        const list = (data as { slug: string; name_ru: string }[]) ?? [];
+        if (list.length > 0) {
+          setCategories(list.map((row) => ({ value: row.slug, label: row.name_ru })));
+        }
+      } catch {
+        // таблицы ещё нет — остаёмся на запасном списке
+      }
+    })();
+  }, []);
 
   // предупреждаем, если уходят со страницы с несохранёнными правками
   useEffect(() => {
@@ -376,7 +398,7 @@ export default function ProductForm({ productId }: { productId?: string }) {
           <div>
             <label className="field-label">Категория</label>
             <select className="field" value={form.category} onChange={set('category')}>
-              {CATEGORIES.map((item) => (
+              {categories.map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}
                 </option>

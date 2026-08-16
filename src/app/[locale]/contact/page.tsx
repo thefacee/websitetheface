@@ -3,7 +3,9 @@ import Reveal from '@/components/Reveal';
 import InquiryForm from '@/components/InquiryForm';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
-import { site, whatsappLink } from '@/lib/site';
+import { getContacts, telLink, waLink } from '@/lib/contacts';
+
+export const dynamic = 'force-dynamic';
 
 export default async function ContactPage({
   params,
@@ -15,12 +17,30 @@ export default async function ContactPage({
   const typedLocale = locale as Locale;
   const dict = getDictionary(typedLocale);
 
+  const site = await getContacts();
+
   const channels = [
-    { label: dict.contact.phone, value: site.phone, href: `tel:${site.phone.replace(/\s/g, '')}` },
-    { label: dict.contact.whatsapp, value: site.phone, href: whatsappLink() },
-    { label: dict.contact.email, value: site.email, href: `mailto:${site.email}` },
-    { label: dict.contact.instagram, value: '@the.face_official', href: site.instagram },
-  ];
+    site.phone && {
+      label: dict.contact.phone,
+      value: site.phone,
+      href: telLink(site.phone),
+    },
+    site.whatsapp && {
+      label: dict.contact.whatsapp,
+      value: site.phone || site.whatsapp,
+      href: waLink(site.whatsapp),
+    },
+    site.email && {
+      label: dict.contact.email,
+      value: site.email,
+      href: `mailto:${site.email}`,
+    },
+    site.instagram && {
+      label: dict.contact.instagram,
+      value: `@${site.instagram.replace(/\/$/, '').split('/').pop()}`,
+      href: site.instagram,
+    },
+  ].filter(Boolean) as Array<{ label: string; value: string; href: string }>;
 
   return (
     <div className="mx-auto max-w-[1400px] px-5 pb-32 pt-32 md:px-10 md:pb-44 md:pt-44">

@@ -6,7 +6,11 @@ import ProductCard from '@/components/ProductCard';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import { getProducts } from '@/lib/products';
-import { site } from '@/lib/site';
+import { getContacts } from '@/lib/contacts';
+import { getSettings, text } from '@/lib/settings';
+
+// товары и тексты берутся из базы — страница собирается на каждый запрос
+export const dynamic = 'force-dynamic';
 
 export default async function HomePage({
   params,
@@ -18,6 +22,17 @@ export default async function HomePage({
   const typedLocale = locale as Locale;
   const dict = getDictionary(typedLocale);
   const featured = await getProducts({ featuredOnly: true, limit: 3 });
+  const site = await getContacts();
+  const settings = await getSettings();
+
+  // Тексты первого экрана можно переписать в админке, не трогая код.
+  const hero = {
+    kicker: text(settings, 'hero_kicker', typedLocale, dict.hero.kicker),
+    title: text(settings, 'hero_title', typedLocale, dict.hero.title),
+    accent: text(settings, 'hero_title_accent', typedLocale, dict.hero.titleAccent),
+    subtitle: text(settings, 'hero_subtitle', typedLocale, dict.hero.subtitle),
+  };
+  const marquee = text(settings, 'marquee', typedLocale, dict.marquee);
 
   return (
     <>
@@ -27,18 +42,16 @@ export default async function HomePage({
         {/* text side */}
         <div className="order-2 flex flex-col justify-center px-5 pb-20 pt-14 md:order-1 md:pb-24 md:pl-10 md:pr-14 md:pt-[68px] lg:pl-[max(2.5rem,calc((100vw-1400px)/2))]">
           <Reveal>
-            <p className="kicker">{dict.hero.kicker}</p>
+            <p className="kicker">{hero.kicker}</p>
           </Reveal>
           <Reveal delay={120}>
             <h1 className="display-xl mt-7 max-w-[13ch] text-balance">
-              {dict.hero.title}
-              <span className="mt-1 block italic text-clay-dark">
-                {dict.hero.titleAccent}
-              </span>
+              {hero.title}
+              <span className="mt-1 block italic text-clay-dark">{hero.accent}</span>
             </h1>
           </Reveal>
           <Reveal delay={240}>
-            <p className="lead mt-8 max-w-[42ch]">{dict.hero.subtitle}</p>
+            <p className="lead mt-8 max-w-[42ch]">{hero.subtitle}</p>
           </Reveal>
           <Reveal delay={340}>
             <div className="mt-10 flex flex-wrap gap-3">
@@ -66,7 +79,7 @@ export default async function HomePage({
         </div>
       </section>
 
-      <Marquee text={dict.marquee} />
+      <Marquee text={marquee} />
 
       {/* ---------------- FEATURED ---------------- */}
       <section className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">

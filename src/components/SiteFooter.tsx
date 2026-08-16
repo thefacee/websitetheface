@@ -1,15 +1,19 @@
 import Link from 'next/link';
-import { site } from '@/lib/site';
+import { getContacts, telLink } from '@/lib/contacts';
+import { getSettings, text } from '@/lib/settings';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/dictionaries';
 
-export default function SiteFooter({
+export default async function SiteFooter({
   locale,
   dict,
 }: {
   locale: Locale;
   dict: Dictionary;
 }) {
+  const site = await getContacts();
+  const settings = await getSettings();
+  const tagline = text(settings, 'footer_tagline', locale, dict.footer.tagline);
   const links = [
     { href: `/${locale}/catalog`, label: dict.nav.catalog },
     { href: `/${locale}/custom`, label: dict.nav.custom },
@@ -26,7 +30,7 @@ export default function SiteFooter({
               The&nbsp;Face
             </div>
             <p className="mt-4 max-w-xs font-display text-lg italic text-muted">
-              {dict.footer.tagline}
+              {tagline}
             </p>
             <p className="mt-6 kicker">{dict.footer.madeIn}</p>
           </div>
@@ -50,11 +54,13 @@ export default function SiteFooter({
           <div>
             <p className="kicker mb-5">{dict.footer.contacts}</p>
             <ul className="space-y-3 text-sm text-ink-soft">
-              <li>
-                <a href={`tel:${site.phone.replace(/\s/g, '')}`} className="link-underline">
-                  {site.phone}
-                </a>
-              </li>
+              {site.phone && (
+                <li>
+                  <a href={telLink(site.phone)} className="link-underline">
+                    {site.phone}
+                  </a>
+                </li>
+              )}
               <li>
                 <a href={`mailto:${site.email}`} className="link-underline">
                   {site.email}

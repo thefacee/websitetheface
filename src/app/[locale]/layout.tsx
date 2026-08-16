@@ -10,6 +10,12 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
+/**
+ * Страницы собираются на каждый запрос: товары, категории и тексты живут в базе,
+ * и правка из админки должна быть видна сразу, без пересборки сайта.
+ */
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({
   params,
 }: {

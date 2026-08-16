@@ -5,6 +5,8 @@ import Marquee from '@/components/Marquee';
 import { isLocale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 
+export const dynamic = 'force-dynamic';
+
 export default async function StoryPage({
   params,
 }: {

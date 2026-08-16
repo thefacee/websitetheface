@@ -4,6 +4,8 @@ import CustomForm from '@/components/CustomForm';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 
+export const dynamic = 'force-dynamic';
+
 export default async function CustomPage({
   params,
 }: {

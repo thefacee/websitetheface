@@ -1,15 +1,14 @@
 'use client';
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import type { Dictionary } from '@/i18n/dictionaries';
 
-const CATEGORIES = ['all', 'table', 'sculpture', 'accessory', 'lighting'] as const;
+export type FilterTab = { slug: string; label: string };
 
 export default function CatalogFilters({
-  dict,
+  tabs,
   counts,
 }: {
-  dict: Dictionary;
+  tabs: FilterTab[];
   counts?: Record<string, number>;
 }) {
   const router = useRouter();
@@ -25,31 +24,25 @@ export default function CatalogFilters({
     router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
   };
 
-  const label = (key: string) =>
-    key === 'all'
-      ? dict.catalog.filters.all
-      : dict.catalog.categories[key as keyof typeof dict.catalog.categories];
-
-  // пустые категории не показываем — меню не должно врать
-  const visible = CATEGORIES.filter((key) => key === 'all' || !counts || counts[key] > 0);
+  if (tabs.length <= 1) return null;
 
   return (
     <div className="no-scrollbar -mx-5 flex gap-7 overflow-x-auto border-b hairline px-5 md:mx-0 md:px-0">
-      {visible.map((key) => {
-        const isActive = active === key;
+      {tabs.map((tab) => {
+        const isActive = active === tab.slug;
         return (
           <button
-            key={key}
+            key={tab.slug}
             type="button"
-            onClick={() => select(key)}
+            onClick={() => select(tab.slug)}
             className={`group relative -mb-px whitespace-nowrap pb-3 text-[0.72rem] uppercase tracking-[0.16em] transition-colors duration-300 ${
               isActive ? 'text-ink' : 'text-muted hover:text-ink'
             }`}
           >
-            {label(key)}
+            {tab.label}
             {counts && (
               <sup className="ml-1 text-[0.6rem] tracking-normal text-muted">
-                {counts[key] ?? 0}
+                {counts[tab.slug] ?? 0}
               </sup>
             )}
             <span

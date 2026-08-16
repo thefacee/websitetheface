@@ -27,6 +27,8 @@ npm run dev
    `supabase/schema.sql` из проекта → **Run**.
    Это создаёт таблицы `products` и `inquiries`, правила безопасности
    и хранилище для фото `product-images`.
+   Затем так же выполнить `supabase/migration-02.sql` — он добавляет
+   категории и настройки сайта, которыми управляет админка.
 3. **Project Settings → API** → скопировать два значения:
    - `Project URL` → в `.env.local` в строку `NEXT_PUBLIC_SUPABASE_URL=`
    - `anon public` ключ → в `NEXT_PUBLIC_SUPABASE_ANON_KEY=`

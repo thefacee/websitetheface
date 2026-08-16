@@ -6,6 +6,9 @@ import CatalogFilters from '@/components/CatalogFilters';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import { getProducts } from '@/lib/products';
+import { categoryName, getCategories } from '@/lib/categories';
+
+export const dynamic = 'force-dynamic';
 
 export default async function CatalogPage({
   params,
@@ -21,7 +24,7 @@ export default async function CatalogPage({
   const typedLocale = locale as Locale;
   const dict = getDictionary(typedLocale);
 
-  const all = await getProducts();
+  const [all, categories] = await Promise.all([getProducts(), getCategories()]);
   const products =
     category && category !== 'all' ? all.filter((p) => p.category === category) : all;
 
@@ -32,6 +35,14 @@ export default async function CatalogPage({
     },
     { all: all.length }
   );
+
+  // Категории приходят из админки; скрытые и пустые в меню не показываем.
+  const tabs = [
+    { slug: 'all', label: dict.catalog.filters.all },
+    ...categories
+      .filter((item) => item.is_visible && (counts[item.slug] ?? 0) > 0)
+      .map((item) => ({ slug: item.slug, label: categoryName(item, typedLocale) })),
+  ];
 
   return (
     <div className="mx-auto max-w-[1400px] px-5 pb-24 pt-28 md:px-10 md:pb-32 md:pt-36">
@@ -49,7 +60,7 @@ export default async function CatalogPage({
 
       <div className="mt-10 md:mt-12">
         <Suspense fallback={<div className="h-9 border-b hairline" />}>
-          <CatalogFilters dict={dict} counts={counts} />
+          <CatalogFilters tabs={tabs} counts={counts} />
         </Suspense>
       </div>
 

@@ -14,7 +14,8 @@ import {
   localizedMaterial,
   localizedName,
 } from '@/lib/products';
-import { formatPrice, site, whatsappLink } from '@/lib/site';
+import { formatPrice } from '@/lib/site';
+import { getContacts, telLink, waLink } from '@/lib/contacts';
 
 export async function generateMetadata({
   params,
@@ -51,6 +52,7 @@ export default async function ProductPage({
   const description = localizedDescription(product, typedLocale);
   const price = formatPrice(product.price, product.currency);
 
+  const site = await getContacts();
   const related = (await getProducts({ limit: 5 }))
     .filter((p) => p.id !== product.id)
     .slice(0, 4);
@@ -106,17 +108,24 @@ export default async function ProductPage({
           </dl>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <a
-              href={whatsappLink(`${name} — ${site.url}/${locale}/catalog/${product.slug}`)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-solid"
-            >
-              WhatsApp
-            </a>
-            <a href={`tel:${site.phone.replace(/\s/g, '')}`} className="btn btn-ghost">
-              {site.phone}
-            </a>
+            {site.whatsapp && (
+              <a
+                href={waLink(
+                  site.whatsapp,
+                  `${name} — ${site.url}/${locale}/catalog/${product.slug}`
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-solid"
+              >
+                WhatsApp
+              </a>
+            )}
+            {site.phone && (
+              <a href={telLink(site.phone)} className="btn btn-ghost">
+                {site.phone}
+              </a>
+            )}
           </div>
 
           <details className="group mt-8 border-t hairline pt-6">

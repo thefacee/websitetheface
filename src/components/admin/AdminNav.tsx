@@ -19,6 +19,8 @@ export default function AdminNav() {
 
   const links = [
     { href: '/admin', label: 'Товары' },
+    { href: '/admin/categories', label: 'Категории' },
+    { href: '/admin/settings', label: 'Настройки' },
     { href: '/admin/inquiries', label: 'Заявки' },
   ];
 
