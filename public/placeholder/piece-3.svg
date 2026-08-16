@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#ded7cc"/>
+      <stop offset="1" stop-color="#bfb2a0"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="13"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <radialGradient id="glow" cx="0.42" cy="0.34" r="0.6">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <rect width="800" height="1000" fill="url(#glow)"/>
+  <g transform="translate(400,520) rotate(1.6)" fill="none" stroke="#8d8172" stroke-opacity="0.5" stroke-width="2.5" stroke-linecap="round">
+    <path d="M-150,-210 C-215,-120 -220,60 -160,175 C-105,275 105,275 160,175 C220,60 215,-120 150,-210 C95,-285 -95,-285 -150,-210 Z"/>
+    <path d="M-92,-55 C-70,-78 -30,-78 -10,-55"/>
+    <path d="M10,-55 C30,-78 70,-78 92,-55"/>
+    <path d="M0,-50 L0,55 C0,70 -14,76 -30,72"/>
+    <path d="M-52,140 C-20,158 20,158 52,140"/>
+  </g>
+  <rect width="800" height="1000" filter="url(#grain)" opacity="0.06"/>
+</svg>

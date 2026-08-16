@@ -1,0 +1,74 @@
+import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
+import Reveal from '@/components/Reveal';
+import ProductCard from '@/components/ProductCard';
+import CatalogFilters from '@/components/CatalogFilters';
+import { isLocale, type Locale } from '@/i18n/config';
+import { getDictionary } from '@/i18n/dictionaries';
+import { getProducts } from '@/lib/products';
+
+export default async function CatalogPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const { locale } = await params;
+  const { category } = await searchParams;
+  if (!isLocale(locale)) notFound();
+
+  const typedLocale = locale as Locale;
+  const dict = getDictionary(typedLocale);
+
+  const all = await getProducts();
+  const products =
+    category && category !== 'all' ? all.filter((p) => p.category === category) : all;
+
+  const counts = all.reduce<Record<string, number>>(
+    (acc, product) => {
+      acc[product.category] = (acc[product.category] ?? 0) + 1;
+      return acc;
+    },
+    { all: all.length }
+  );
+
+  return (
+    <div className="mx-auto max-w-[1400px] px-5 pb-24 pt-28 md:px-10 md:pb-32 md:pt-36">
+      <Reveal>
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+          <div>
+            <p className="kicker">{dict.nav.catalog}</p>
+            <h1 className="display-lg mt-3">{dict.catalog.title}</h1>
+          </div>
+          <p className="max-w-[38ch] text-sm text-muted md:text-right">
+            {dict.catalog.subtitle}
+          </p>
+        </div>
+      </Reveal>
+
+      <div className="mt-10 md:mt-12">
+        <Suspense fallback={<div className="h-9 border-b hairline" />}>
+          <CatalogFilters dict={dict} counts={counts} />
+        </Suspense>
+      </div>
+
+      {products.length === 0 ? (
+        <p className="py-24 text-center text-muted">{dict.catalog.empty}</p>
+      ) : (
+        <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 md:mt-10 md:gap-x-6 md:gap-y-12 lg:grid-cols-3 xl:grid-cols-4">
+          {products.map((product, i) => (
+            <Reveal key={product.id} delay={(i % 4) * 70}>
+              <ProductCard
+                product={product}
+                locale={typedLocale}
+                dict={dict}
+                priority={i < 4}
+              />
+            </Reveal>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
