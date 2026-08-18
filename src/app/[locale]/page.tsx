@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import Reveal from '@/components/Reveal';
 import Marquee from '@/components/Marquee';
@@ -67,12 +68,13 @@ export default async function HomePage({
 
         {/* image side */}
         <div className="grain relative order-1 h-[58svh] overflow-hidden bg-bone-dark md:order-2 md:h-full">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/media/face-table-2.png"
             alt=""
-            fetchPriority="high"
-            className="h-full w-full object-cover object-[center_58%]"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover object-[center_58%]"
           />
           <div className="absolute inset-y-0 left-0 hidden w-32 bg-gradient-to-r from-bone to-transparent md:block" />
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-bone/70 to-transparent md:hidden" />
@@ -118,11 +120,12 @@ export default async function HomePage({
         <div className="mx-auto grid max-w-[1400px] gap-14 px-5 py-24 md:grid-cols-2 md:px-10 md:py-32">
           <Reveal className="order-2 md:order-1">
             <div className="grain relative aspect-[4/5] overflow-hidden bg-sand">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/media/carousel-3.jpg"
                 alt=""
-                className="h-full w-full object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 45vw"
+                className="object-cover"
               />
             </div>
           </Reveal>
@@ -169,11 +172,12 @@ export default async function HomePage({
       {/* ---------------- CUSTOM CTA ---------------- */}
       <section className="relative overflow-hidden bg-ink text-bone">
         <div className="grain absolute inset-0 opacity-30">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/media/carousel-6.png"
             alt=""
-            className="h-full w-full object-cover opacity-40"
+            fill
+            sizes="100vw"
+            className="object-cover opacity-40"
           />
         </div>
         <div className="relative mx-auto max-w-[1400px] px-5 py-28 text-center md:px-10 md:py-40">

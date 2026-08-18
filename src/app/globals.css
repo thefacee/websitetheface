@@ -10,8 +10,8 @@
   --color-ink-soft: #2b2620;
   --color-muted: #7d7466;
 
-  --font-display: "Cormorant Garamond", "Noto Serif Armenian", "Times New Roman", serif;
-  --font-body: "Inter", "Noto Sans Armenian", system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-display-latin), var(--font-display-am), "Times New Roman", serif;
+  --font-body: var(--font-body-latin), var(--font-body-am), system-ui, -apple-system, sans-serif;
 
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }

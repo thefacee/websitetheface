@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function ProductGallery({
   images,
@@ -29,8 +30,7 @@ export default function ProductGallery({
               }`}
               aria-label={`${alt} — ${i + 1}`}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="" className="h-full w-full object-cover" />
+              <Image src={src} alt="" fill sizes="80px" className="object-cover" />
             </button>
           ))}
         </div>
@@ -38,12 +38,14 @@ export default function ProductGallery({
 
       <div className="grain group relative aspect-[4/5] flex-1 overflow-hidden bg-bone-dark">
         {list.map((src, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             key={`${src}-${i}`}
             src={src}
             alt={i === active ? alt : ''}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+            fill
+            priority={i === 0}
+            sizes="(max-width: 768px) 100vw, 55vw"
+            className={`object-cover transition-opacity duration-500 ${
               i === active ? 'opacity-100' : 'opacity-0'
             }`}
           />

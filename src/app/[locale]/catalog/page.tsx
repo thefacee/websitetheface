@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import Reveal from '@/components/Reveal';
 import ProductCard from '@/components/ProductCard';
 import CatalogFilters from '@/components/CatalogFilters';
@@ -9,6 +10,24 @@ import { getProducts } from '@/lib/products';
 import { categoryName, getCategories } from '@/lib/categories';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const dict = getDictionary(locale);
+  return {
+    title: `${dict.catalog.title} — The Face`,
+    description: dict.catalog.subtitle,
+    alternates: {
+      canonical: `/${locale}/catalog`,
+      languages: { hy: '/hy/catalog', ru: '/ru/catalog', en: '/en/catalog' },
+    },
+  };
+}
 
 export default async function CatalogPage({
   params,

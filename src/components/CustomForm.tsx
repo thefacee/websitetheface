@@ -21,6 +21,7 @@ export default function CustomForm({
     message: '',
   });
   const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [website, setWebsite] = useState('');
   const [errorText, setErrorText] = useState('');
 
   const set = (key: keyof typeof form) => (
@@ -41,6 +42,7 @@ export default function CustomForm({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          website,
           type: 'custom',
           name: form.name,
           contact: form.contact,
@@ -77,6 +79,17 @@ export default function CustomForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {/* приманка для ботов: людям не видна, боты её заполняют */}
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+        className="absolute left-[-9999px] h-0 w-0 opacity-0"
+      />
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label className="field-label" htmlFor="cf-name">

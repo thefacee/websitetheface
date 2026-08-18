@@ -103,5 +103,5 @@ export function localizedMaterial(material: string | null, locale: Locale): stri
 }
 
 export function productImage(product: Product, index = 0): string {
-  return product.images?.[index] || '/placeholder/piece-1.svg';
+  return product.images?.[index] || '/media/face-table-2.png';
 }

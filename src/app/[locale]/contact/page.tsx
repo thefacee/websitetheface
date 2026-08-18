@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import Reveal from '@/components/Reveal';
 import InquiryForm from '@/components/InquiryForm';
 import { isLocale, type Locale } from '@/i18n/config';
@@ -6,6 +7,24 @@ import { getDictionary } from '@/i18n/dictionaries';
 import { getContacts, telLink, waLink } from '@/lib/contacts';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const dict = getDictionary(locale);
+  return {
+    title: `${dict.contact.title} — The Face`,
+    description: dict.contact.subtitle,
+    alternates: {
+      canonical: `/${locale}/contact`,
+      languages: { hy: '/hy/contact', ru: '/ru/contact', en: '/en/contact' },
+    },
+  };
+}
 
 export default async function ContactPage({
   params,

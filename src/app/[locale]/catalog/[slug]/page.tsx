@@ -31,7 +31,15 @@ export async function generateMetadata({
   return {
     title: `${name} — The Face`,
     description: localizedDescription(product, locale as Locale).slice(0, 160),
-    openGraph: image ? { images: [image] } : undefined,
+    alternates: {
+      canonical: `/${locale}/catalog/${slug}`,
+      languages: {
+        hy: `/hy/catalog/${slug}`,
+        ru: `/ru/catalog/${slug}`,
+        en: `/en/catalog/${slug}`,
+      },
+    },
+    openGraph: image ? { images: [image], type: 'website' } : undefined,
   };
 }
 
@@ -66,8 +74,35 @@ export default async function ProductPage({
     { label: dict.product.status, value: dict.catalog.status[product.status] },
   ].filter(Boolean) as Array<{ label: string; value: string }>;
 
+  // Карточка товара для поиска: Google показывает цену и наличие прямо в выдаче.
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name,
+    description,
+    image: product.images ?? [],
+    material: product.material || undefined,
+    brand: { '@type': 'Brand', name: 'The Face' },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: product.currency || 'AMD',
+      price: product.price ?? undefined,
+      availability:
+        product.status === 'sold'
+          ? 'https://schema.org/SoldOut'
+          : product.status === 'made_to_order'
+            ? 'https://schema.org/PreOrder'
+            : 'https://schema.org/InStock',
+      url: `${site.url}/${locale}/catalog/${product.slug}`,
+    },
+  };
+
   return (
     <div className="mx-auto max-w-[1400px] px-5 pb-24 pt-24 md:px-10 md:pb-32 md:pt-32">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Link
         href={`/${locale}/catalog`}
         className="link-underline text-[0.72rem] uppercase tracking-[0.16em] text-muted"
@@ -144,6 +179,21 @@ export default async function ProductPage({
               />
             </div>
           </details>
+
+          {/* доставка, уход, оплата — то, что спрашивают перед покупкой */}
+          <div className="mt-2 border-t hairline">
+            {dict.product.info.map((item) => (
+              <details key={item.title} className="group border-b hairline">
+                <summary className="flex cursor-pointer list-none items-center justify-between py-4 text-[0.72rem] uppercase tracking-[0.16em] text-muted transition-colors hover:text-ink">
+                  {item.title}
+                  <span className="transition-transform duration-300 group-open:rotate-45">+</span>
+                </summary>
+                <p className="pb-5 pr-6 text-[0.85rem] leading-relaxed text-ink-soft">
+                  {item.text}
+                </p>
+              </details>
+            ))}
+          </div>
         </div>
       </div>
 

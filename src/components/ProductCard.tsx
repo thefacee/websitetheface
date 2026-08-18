@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Product } from '@/lib/supabase/types';
 import { localizedMaterial, localizedName, productImage } from '@/lib/products';
 import { formatPrice } from '@/lib/site';
@@ -24,23 +25,24 @@ export default function ProductCard({
   return (
     <Link href={`/${locale}/catalog/${product.slug}`} className="group block">
       <div className="grain relative aspect-[4/5] overflow-hidden bg-bone-dark">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={cover}
           alt={localizedName(product, locale)}
-          loading={priority ? 'eager' : 'lazy'}
-          className={`img-zoom h-full w-full object-cover ${
+          fill
+          priority={priority}
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className={`img-zoom object-cover ${
             hover ? 'transition-opacity duration-700 group-hover:opacity-0' : ''
           }`}
         />
         {hover && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={hover}
             alt=""
-            loading="lazy"
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             aria-hidden
-            className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+            className="object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-100"
           />
         )}
 

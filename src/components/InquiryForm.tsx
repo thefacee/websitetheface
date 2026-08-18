@@ -25,6 +25,7 @@ export default function InquiryForm({
   const [contact, setContact] = useState('');
   const [message, setMessage] = useState(defaultMessage);
   const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [website, setWebsite] = useState('');
   const [errorText, setErrorText] = useState('');
 
   async function handleSubmit(e: FormEvent) {
@@ -41,6 +42,7 @@ export default function InquiryForm({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          website,
           type,
           name,
           contact,
@@ -68,6 +70,17 @@ export default function InquiryForm({
 
   return (
     <form onSubmit={handleSubmit} className={compact ? 'space-y-5' : 'space-y-7'}>
+      {/* приманка для ботов: людям не видна, боты её заполняют */}
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+        className="absolute left-[-9999px] h-0 w-0 opacity-0"
+      />
       <div className={compact ? 'space-y-5' : 'grid gap-5 sm:grid-cols-2'}>
         <div>
           <label className="field-label" htmlFor="if-name">

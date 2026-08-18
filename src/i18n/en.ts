@@ -79,6 +79,20 @@ const en: Dictionary = {
     askPrice: 'Ask for the price',
     related: 'You may also like',
     notFound: 'Piece not found.',
+    info: [
+      {
+        title: 'Delivery',
+        text: 'Free within Yerevan, we carry and place it ourselves. Across Armenia and abroad: wooden crate, insurance, cost and timing quoted per address.',
+      },
+      {
+        title: 'Care',
+        text: 'Wipe with a soft dry cloth. The stone is porous, so wine, coffee and oil should be removed at once. Seal once a year with a natural stone sealer.',
+      },
+      {
+        title: 'Payment and lead time',
+        text: 'Cash or bank transfer; commissions start with a 30% deposit. In-stock pieces ship immediately, made-to-order takes 2 to 6 weeks.',
+      },
+    ],
   },
   form: {
     name: 'Name',

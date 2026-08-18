@@ -1,11 +1,31 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+import Image from 'next/image';
 import Reveal from '@/components/Reveal';
 import Marquee from '@/components/Marquee';
 import { isLocale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const dict = getDictionary(locale);
+  return {
+    title: `${dict.story.title} — The Face`,
+    description: dict.story.lead,
+    alternates: {
+      canonical: `/${locale}/story`,
+      languages: { hy: '/hy/story', ru: '/ru/story', en: '/en/story' },
+    },
+  };
+}
 
 export default async function StoryPage({
   params,
@@ -31,11 +51,12 @@ export default async function StoryPage({
       <section className="mx-auto mt-20 max-w-[1400px] px-5 md:px-10">
         <Reveal>
           <div className="grain relative aspect-[16/9] overflow-hidden bg-bone-dark">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src="/media/gallery-1.png"
               alt=""
-              className="h-full w-full object-cover object-[center_65%]"
+              fill
+              sizes="100vw"
+              className="object-cover object-[center_65%]"
             />
           </div>
         </Reveal>

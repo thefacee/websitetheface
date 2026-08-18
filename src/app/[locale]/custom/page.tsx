@@ -1,10 +1,30 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import Image from 'next/image';
 import Reveal from '@/components/Reveal';
 import CustomForm from '@/components/CustomForm';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const dict = getDictionary(locale);
+  return {
+    title: `${dict.custom.title} — The Face`,
+    description: dict.custom.subtitle,
+    alternates: {
+      canonical: `/${locale}/custom`,
+      languages: { hy: '/hy/custom', ru: '/ru/custom', en: '/en/custom' },
+    },
+  };
+}
 
 export default async function CustomPage({
   params,
@@ -45,11 +65,12 @@ export default async function CustomPage({
             </ol>
 
             <div className="grain relative mt-10 aspect-[4/3] overflow-hidden bg-bone-dark">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/media/carousel-6.png"
                 alt=""
-                className="h-full w-full object-cover object-[center_60%]"
+                fill
+                sizes="(max-width: 768px) 100vw, 40vw"
+                className="object-cover object-[center_60%]"
               />
             </div>
           </Reveal>
