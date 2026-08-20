@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { createClient, isSupabaseReady } from '@/lib/supabase/client';
 import SetupNotice from '@/components/admin/SetupNotice';
 
@@ -82,6 +83,13 @@ export default function AdminLoginPage() {
         <button type="submit" className="btn btn-solid w-full" disabled={loading}>
           {loading ? '...' : 'Войти'}
         </button>
+
+        <Link
+          href="/admin/reset"
+          className="block text-center text-xs text-muted underline hover:text-ink"
+        >
+          Забыли пароль?
+        </Link>
       </form>
     </div>
   );

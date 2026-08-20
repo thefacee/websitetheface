@@ -8,14 +8,18 @@ export async function middleware(request: NextRequest) {
   // ---- Admin area: refresh the Supabase session and gate access ----
   if (pathname.startsWith('/admin')) {
     const { response, user } = await updateSession(request);
-    const isLogin = pathname === '/admin/login';
+    // страницы, доступные без входа: логин и восстановление пароля
+    const isPublic =
+      pathname === '/admin/login' ||
+      pathname === '/admin/reset' ||
+      pathname === '/admin/update-password';
 
-    if (!user && !isLogin) {
+    if (!user && !isPublic) {
       const url = request.nextUrl.clone();
       url.pathname = '/admin/login';
       return NextResponse.redirect(url);
     }
-    if (user && isLogin) {
+    if (user && pathname === '/admin/login') {
       const url = request.nextUrl.clone();
       url.pathname = '/admin';
       return NextResponse.redirect(url);
