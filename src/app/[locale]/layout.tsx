@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
+import FloatingContact from '@/components/FloatingContact';
 import { isLocale, locales, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import { getContacts } from '@/lib/contacts';
@@ -88,6 +89,7 @@ export default async function LocaleLayout({
       <SiteHeader locale={typedLocale} dict={dict} />
       <main className="flex-1">{children}</main>
       <SiteFooter locale={typedLocale} dict={dict} />
+      <FloatingContact whatsapp={contacts.whatsapp} label="WhatsApp" />
     </div>
   );
 }

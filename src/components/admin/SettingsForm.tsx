@@ -134,6 +134,30 @@ export default function SettingsForm() {
         </div>
       </section>
 
+      {/* живой предпросмотр первого экрана */}
+      <section className="mt-12">
+        <p className="kicker">Как выглядит первый экран сайта</p>
+        <div className="mt-4 border hairline bg-bone-dark p-6 md:p-8">
+          <p className="kicker">{rows.hero_kicker?.value_ru || 'THE FACE — SCULPTED SILENCE'}</p>
+          <h2 className="display-md mt-4 max-w-[16ch]">
+            {rows.hero_title?.value_ru || 'Камень становится формой'}
+            <span className="mt-1 block italic text-clay-dark">
+              {rows.hero_title_accent?.value_ru || 'Форма — присутствием'}
+            </span>
+          </h2>
+          <p className="mt-4 max-w-[46ch] text-sm text-ink-soft">
+            {rows.hero_subtitle?.value_ru ||
+              'Каменные столы и скульптуры ручной работы из Армении.'}
+          </p>
+          <p className="mt-5 border-t hairline pt-3 text-[11px] uppercase tracking-[0.16em] text-muted">
+            {rows.marquee?.value_ru || 'РУЧНАЯ РАБОТА · АРМЕНИЯ · НАТУРАЛЬНЫЙ КАМЕНЬ'}
+          </p>
+        </div>
+        <p className="mt-2 text-[11px] text-muted">
+          Показан русский вариант. Пустое поле — на сайте останется текст по умолчанию.
+        </p>
+      </section>
+
       {/* ---- тексты ---- */}
       <section className="mt-12">
         <p className="kicker">Тексты</p>

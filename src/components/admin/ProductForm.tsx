@@ -4,6 +4,7 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient, isSupabaseReady } from '@/lib/supabase/client';
 import SetupNotice from './SetupNotice';
+import ProductPreview from './ProductPreview';
 import type { Product, ProductCategory, ProductStatus } from '@/lib/supabase/types';
 
 const MAX_IMAGE_MB = 8;
@@ -74,6 +75,7 @@ export default function ProductForm({ productId }: { productId?: string }) {
   const [categories, setCategories] = useState(FALLBACK_CATEGORIES);
   const [error, setError] = useState('');
   const [dirty, setDirty] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
 
   useEffect(() => {
     if (!productId) return;
@@ -135,6 +137,18 @@ export default function ProductForm({ productId }: { productId?: string }) {
     })();
   }, []);
 
+  // Ctrl+S сохраняет, как в любом редакторе
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        document.getElementById('product-save')?.click();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   // предупреждаем, если уходят со страницы с несохранёнными правками
   useEffect(() => {
     if (!dirty) return;
@@ -156,7 +170,11 @@ export default function ProductForm({ productId }: { productId?: string }) {
   };
 
   async function handleUpload(e: ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? []);
+    await uploadFiles(Array.from(e.target.files ?? []));
+    e.target.value = '';
+  }
+
+  async function uploadFiles(files: File[]) {
     if (files.length === 0) return;
 
     const tooBig = files.find((file) => file.size > MAX_IMAGE_MB * 1024 * 1024);
@@ -164,7 +182,6 @@ export default function ProductForm({ productId }: { productId?: string }) {
       setError(
         `«${tooBig.name}» весит больше ${MAX_IMAGE_MB} МБ. Уменьшите фото и загрузите снова.`
       );
-      e.target.value = '';
       return;
     }
 
@@ -196,7 +213,6 @@ export default function ProductForm({ productId }: { productId?: string }) {
     } finally {
       setUploading(false);
       setProgress({ done: 0, total: 0 });
-      e.target.value = '';
     }
   }
 
@@ -279,7 +295,8 @@ export default function ProductForm({ productId }: { productId?: string }) {
   if (loading) return <p className="text-muted">Загружаю товар...</p>;
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-3xl space-y-10">
+    <form onSubmit={handleSubmit} className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_380px] xl:items-start">
+      <div className="space-y-10">
       <h1 className="font-display text-3xl">
         {productId ? 'Редактировать товар' : 'Новый товар'}
       </h1>
@@ -287,7 +304,24 @@ export default function ProductForm({ productId }: { productId?: string }) {
       {/* ---- IMAGES ---- */}
       <section>
         <p className="kicker mb-4">Фотографии</p>
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
+        <div
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragOver(false);
+            const dropped = Array.from(e.dataTransfer.files).filter((f) =>
+              f.type.startsWith('image/')
+            );
+            uploadFiles(dropped);
+          }}
+          className={`grid grid-cols-3 gap-3 rounded-sm p-1 transition-colors sm:grid-cols-5 ${
+            dragOver ? 'bg-sand ring-1 ring-ink' : ''
+          }`}
+        >
           {images.map((src, i) => (
             <div key={src} className="group relative aspect-square overflow-hidden bg-sand">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -329,7 +363,8 @@ export default function ProductForm({ productId }: { productId?: string }) {
         </div>
         <p className="mt-2 text-xs text-muted">
           Первое фото — главное, второе показывается при наведении в каталоге.
-          Стрелками меняйте порядок, ✕ удаляет. До {MAX_IMAGE_MB} МБ на файл.
+          Стрелками меняйте порядок, ✕ удаляет. Файлы можно просто перетащить сюда
+          мышкой. До {MAX_IMAGE_MB} МБ на файл.
         </p>
         {uploading && (
           <div className="mt-3 h-px w-full bg-ink/10">
@@ -492,8 +527,19 @@ export default function ProductForm({ productId }: { productId?: string }) {
         <p className="border hairline bg-bone-dark p-4 text-sm text-clay-dark">{error}</p>
       )}
 
-      <div className="sticky bottom-0 -mx-5 flex flex-wrap items-center gap-3 border-t hairline bg-bone/95 px-5 py-4 backdrop-blur-sm md:-mx-8 md:px-8">
-        <button type="submit" className="btn btn-solid" disabled={saving || uploading}>
+      </div>
+
+      {/* правая колонка: то же, что увидит покупатель */}
+      <aside className="xl:sticky xl:top-6">
+        <ProductPreview draft={form} images={images} />
+        <p className="mt-3 text-[11px] leading-relaxed text-muted">
+          Обновляется на лету, пока вы печатаете. На сайте это появится после
+          «Сохранить».
+        </p>
+      </aside>
+
+      <div className="sticky bottom-0 xl:col-span-2 -mx-5 flex flex-wrap items-center gap-3 border-t hairline bg-bone/95 px-5 py-4 backdrop-blur-sm md:-mx-8 md:px-8">
+        <button id="product-save" type="submit" className="btn btn-solid" disabled={saving || uploading}>
           {saving ? 'Сохраняю...' : 'Сохранить'}
         </button>
         <button
