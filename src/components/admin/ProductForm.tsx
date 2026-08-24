@@ -323,7 +323,7 @@ export default function ProductForm({ productId }: { productId?: string }) {
           }`}
         >
           {images.map((src, i) => (
-            <div key={src} className="group relative aspect-square overflow-hidden bg-sand">
+            <div key={src} className="relative aspect-square overflow-hidden bg-sand">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={src} alt="" className="h-full w-full object-cover" />
               {i === 0 && (
@@ -331,14 +331,33 @@ export default function ProductForm({ productId }: { productId?: string }) {
                   Главное
                 </span>
               )}
-              <div className="absolute inset-x-0 bottom-0 flex justify-between bg-ink/70 px-1 py-0.5 text-[11px] text-bone opacity-0 transition-opacity group-hover:opacity-100">
-                <button type="button" onClick={() => moveImage(i, -1)}>
+              {/* Удалить — всегда видно, крупная кнопка для пальца на телефоне */}
+              <button
+                type="button"
+                onClick={() => removeImage(i)}
+                aria-label="Удалить это фото"
+                className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-full bg-ink/85 text-sm leading-none text-bone shadow-sm active:scale-95 hover:bg-clay-dark"
+              >
+                ✕
+              </button>
+              {/* Порядок — стрелки внизу, тоже всегда видны */}
+              <div className="absolute inset-x-0 bottom-0 flex bg-ink/70 text-bone">
+                <button
+                  type="button"
+                  onClick={() => moveImage(i, -1)}
+                  aria-label="Сдвинуть левее"
+                  disabled={i === 0}
+                  className="flex-1 py-1.5 text-sm leading-none active:bg-ink hover:bg-ink disabled:opacity-30"
+                >
                   ←
                 </button>
-                <button type="button" onClick={() => removeImage(i)}>
-                  ✕
-                </button>
-                <button type="button" onClick={() => moveImage(i, 1)}>
+                <button
+                  type="button"
+                  onClick={() => moveImage(i, 1)}
+                  aria-label="Сдвинуть правее"
+                  disabled={i === images.length - 1}
+                  className="flex-1 border-l border-bone/20 py-1.5 text-sm leading-none active:bg-ink hover:bg-ink disabled:opacity-30"
+                >
                   →
                 </button>
               </div>
