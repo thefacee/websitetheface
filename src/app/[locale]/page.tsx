@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic';
 // Порядок совпадает с dict.stones.items (травертин, туф, чёрный туф).
 const STONE_IMAGES = [
   '/media/material-travertine.png',
-  '/media/material-tuff.png',
+  '/media/material-tuff.jpg',
   '/media/material-black-tuff.png',
 ];
 
