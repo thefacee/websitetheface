@@ -70,14 +70,14 @@ export default async function HomePage({
         <div className="grain relative order-1 h-[58svh] overflow-hidden bg-bone-dark md:order-2 md:h-full">
           <video
             src="/media/hero.mp4"
-            poster="/media/face-table-2.png"
+            poster="/media/hero-poster.jpg"
             autoPlay
             muted
             loop
             playsInline
             preload="metadata"
             aria-hidden
-            className="absolute inset-0 h-full w-full object-cover object-[center_58%]"
+            className="absolute inset-0 h-full w-full object-cover object-[center_55%]"
           />
           <div className="absolute inset-y-0 left-0 hidden w-32 bg-gradient-to-r from-bone to-transparent md:block" />
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-bone/70 to-transparent md:hidden" />
