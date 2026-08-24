@@ -42,6 +42,28 @@ const en: Dictionary = {
       { title: 'Worldwide shipping', text: 'Across Armenia and abroad, crated and insured.' },
     ],
   },
+  stones: {
+    kicker: 'Material',
+    title: 'The stones & their story',
+    subtitle: 'Every stone comes from Armenian earth. Each has its own age, colour and character.',
+    items: [
+      {
+        name: 'Travertine',
+        origin: 'Armenian highlands',
+        text: 'A porous limestone born of hot springs over thousands of years. Warm, honeyed and veined with life — a stone that breathes light.',
+      },
+      {
+        name: 'Tuff',
+        origin: 'Yerevan, Ani',
+        text: 'The volcanic stone that ancient Armenia was built from. Rose, ochre and warm — it holds the sun for centuries.',
+      },
+      {
+        name: 'Black tuff',
+        origin: 'Gegharkunik',
+        text: 'A rare dark rock of hardened lava. Deep, graphite and severe — a stone of silence and strength.',
+      },
+    ],
+  },
   process: {
     kicker: 'How it is born',
     title: 'From quarry to your home',

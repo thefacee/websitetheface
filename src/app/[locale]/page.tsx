@@ -13,6 +13,13 @@ import { getSettings, text } from '@/lib/settings';
 // товары и тексты берутся из базы — страница собирается на каждый запрос
 export const dynamic = 'force-dynamic';
 
+// Порядок совпадает с dict.stones.items (травертин, туф, чёрный туф).
+const STONE_IMAGES = [
+  '/media/material-travertine.png',
+  '/media/material-tuff.png',
+  '/media/material-black-tuff.png',
+];
+
 export default async function HomePage({
   params,
 }: {
@@ -22,9 +29,27 @@ export default async function HomePage({
   if (!isLocale(locale)) notFound();
   const typedLocale = locale as Locale;
   const dict = getDictionary(typedLocale);
-  const featured = await getProducts({ featuredOnly: true, limit: 3 });
+  // «Избранные»: сначала отмеченные «на главной». Если их меньше трёх —
+  // дополняем свежими опубликованными работами, чтобы секция не была пустой.
+  const featuredPicked = await getProducts({ featuredOnly: true });
+  let featured = featuredPicked;
+  if (featuredPicked.length < 3) {
+    const recent = await getProducts({ limit: 6 });
+    const fill = recent.filter((p) => !featuredPicked.some((f) => f.id === p.id));
+    featured = [...featuredPicked, ...fill].slice(0, 3);
+  }
   const site = await getContacts();
   const settings = await getSettings();
+
+  // Ровная раскладка: 2 в ряд — по два, 4 — ровно 4 (2×2 / в линию), иначе по три.
+  const featuredCols =
+    featured.length <= 1
+      ? 'max-w-sm'
+      : featured.length === 2
+        ? 'sm:grid-cols-2'
+        : featured.length === 4
+          ? 'sm:grid-cols-2 lg:grid-cols-4'
+          : 'sm:grid-cols-2 lg:grid-cols-3';
 
   // Тексты первого экрана можно переписать в админке, не трогая код.
   const hero = {
@@ -104,7 +129,7 @@ export default async function HomePage({
           </div>
         </Reveal>
 
-        <div className="mt-14 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={`mt-14 grid gap-x-6 gap-y-14 ${featuredCols}`}>
           {featured.map((product, i) => (
             <Reveal key={product.id} delay={i * 90}>
               <ProductCard
@@ -124,11 +149,11 @@ export default async function HomePage({
           <Reveal className="order-2 md:order-1">
             <div className="grain relative aspect-[4/5] overflow-hidden bg-sand">
               <Image
-                src="/media/carousel-3.jpg"
+                src="/media/philosophy.jpg"
                 alt=""
                 fill
                 sizes="(max-width: 768px) 100vw, 45vw"
-                className="object-cover"
+                className="object-cover object-[center_60%]"
               />
             </div>
           </Reveal>
@@ -147,6 +172,46 @@ export default async function HomePage({
               ))}
             </dl>
           </Reveal>
+        </div>
+      </section>
+
+      {/* ---------------- STONES ---------------- */}
+      <section className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-28">
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
+            <div>
+              <p className="kicker">{dict.stones.kicker}</p>
+              <h2 className="display-lg mt-4 max-w-[16ch]">{dict.stones.title}</h2>
+            </div>
+            <p className="lead max-w-[40ch] md:text-right">{dict.stones.subtitle}</p>
+          </div>
+        </Reveal>
+
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {dict.stones.items.map((stone, i) => (
+            <Reveal key={stone.name} delay={i * 90}>
+              <article className="group h-full overflow-hidden border hairline bg-bone-dark">
+                <div className="grain relative aspect-[5/4] overflow-hidden">
+                  <Image
+                    src={STONE_IMAGES[i]}
+                    alt={stone.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-6 md:p-7">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h3 className="font-display text-2xl">{stone.name}</h3>
+                    <span className="shrink-0 text-[0.68rem] uppercase tracking-[0.16em] text-muted">
+                      {stone.origin}
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">{stone.text}</p>
+                </div>
+              </article>
+            </Reveal>
+          ))}
         </div>
       </section>
 
