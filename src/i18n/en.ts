@@ -154,6 +154,7 @@ const en: Dictionary = {
   story: {
     kicker: 'Story',
     title: 'The Face',
+    certificate: 'Every piece comes with a certificate of authenticity',
     lead: 'It started with one stone and one question: what is inside?',
     body: [
       'The Face was born in Armenia, in a workshop that holds more silence than sound. We do not draw a form on paper and then impose it on the stone. We do the opposite: we look at the block until a face appears in it.',

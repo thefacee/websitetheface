@@ -50,15 +50,21 @@ export default async function StoryPage({
 
       <section className="mx-auto mt-20 max-w-[1400px] px-5 md:px-10">
         <Reveal>
-          <div className="grain relative aspect-[16/9] overflow-hidden bg-bone-dark">
-            <Image
-              src="/media/gallery-1.png"
-              alt=""
-              fill
-              sizes="100vw"
-              className="object-cover object-[center_65%]"
-            />
-          </div>
+          <figure className="mx-auto max-w-[520px]">
+            <div className="overflow-hidden border hairline bg-white shadow-[0_28px_70px_-30px_rgba(38,30,20,0.5)]">
+              <Image
+                src="/media/certificate.jpg"
+                alt={`${dict.story.title} — ${dict.story.certificate}`}
+                width={1024}
+                height={1536}
+                sizes="(max-width: 768px) 92vw, 520px"
+                className="h-auto w-full"
+              />
+            </div>
+            <figcaption className="mt-5 text-center text-xs uppercase tracking-[0.18em] text-muted">
+              {dict.story.certificate}
+            </figcaption>
+          </figure>
         </Reveal>
       </section>
 
