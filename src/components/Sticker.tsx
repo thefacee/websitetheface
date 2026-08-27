@@ -30,15 +30,13 @@ export default function Sticker({ src, hint }: { src: string; hint?: string }) {
       const raw = localStorage.getItem(POS_KEY);
       if (raw) saved = JSON.parse(raw);
     } catch {}
-    if (saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)) {
-      setPos({ x: Math.min(saved.x, Math.max(0, w - SIZE)), y: Math.max(0, saved.y) });
-    } else {
-      setPos(
-        w >= 768
+    const initial =
+      saved && Number.isFinite(saved.x) && Number.isFinite(saved.y)
+        ? saved
+        : w >= 768
           ? { x: Math.round(w * 0.5 - SIZE / 2), y: 452 }
-          : { x: w - SIZE - 16, y: 296 }
-      );
-    }
+          : { x: w - SIZE - 16, y: 296 };
+    setPos(clamp(initial));
     try {
       if (!localStorage.getItem(HINT_KEY)) setShowHint(true);
     } catch {}
@@ -46,11 +44,15 @@ export default function Sticker({ src, hint }: { src: string; hint?: string }) {
 
   const clamp = (p: Pos): Pos => {
     const doc = document.documentElement;
-    const maxX = Math.max(0, (doc.scrollWidth || window.innerWidth) - SIZE);
-    const maxY = Math.max(0, (doc.scrollHeight || window.innerHeight) - SIZE);
+    // Запас на поворот стикера (~7°), чтобы угол не вылезал за край и не
+    // создавал горизонтальную прокрутку. Ширину считаем по окну, а не по
+    // scrollWidth (иначе стикер «толкал» бы собственную границу).
+    const m = 14;
+    const maxX = Math.max(m, window.innerWidth - SIZE - m);
+    const maxY = Math.max(m, (doc.scrollHeight || window.innerHeight) - SIZE - m);
     return {
-      x: Math.min(Math.max(0, p.x), maxX),
-      y: Math.min(Math.max(0, p.y), maxY),
+      x: Math.min(Math.max(m, p.x), maxX),
+      y: Math.min(Math.max(m, p.y), maxY),
     };
   };
 
