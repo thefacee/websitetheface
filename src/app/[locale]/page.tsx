@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Reveal from '@/components/Reveal';
 import Marquee from '@/components/Marquee';
 import ProductCard from '@/components/ProductCard';
+import Sticker from '@/components/Sticker';
 import { isLocale, type Locale } from '@/i18n/config';
 import { getDictionary } from '@/i18n/dictionaries';
 import { getProducts } from '@/lib/products';
@@ -59,6 +60,7 @@ export default async function HomePage({
     subtitle: text(settings, 'hero_subtitle', typedLocale, dict.hero.subtitle),
   };
   const marquee = text(settings, 'marquee', typedLocale, dict.marquee);
+  const stickerHint = { hy: 'քաշիր ինձ', ru: 'потяни меня', en: 'drag me' }[typedLocale];
 
   return (
     <>
@@ -276,6 +278,9 @@ export default async function HomePage({
           </Reveal>
         </div>
       </section>
+
+      {/* Печать-стикер: перетаскивается по странице */}
+      <Sticker src="/media/sticker-seal.png" hint={stickerHint} />
     </>
   );
 }
