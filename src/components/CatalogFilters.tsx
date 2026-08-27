@@ -7,22 +7,23 @@ export type FilterTab = { slug: string; label: string };
 export default function CatalogFilters({
   tabs,
   counts,
+  active,
 }: {
   tabs: FilterTab[];
   counts?: Record<string, number>;
+  active?: string;
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const active = searchParams.get('category') || 'all';
+  // Активная категория приходит с сервера (по умолчанию — первая).
+  const activeSlug = active ?? searchParams.get('category') ?? tabs[0]?.slug;
 
   const select = (value: string) => {
+    if (value === activeSlug) return;
     const params = new URLSearchParams(searchParams.toString());
-    // Повторный клик по активной категории (или «all») сбрасывает фильтр.
-    if (value === 'all' || value === active) params.delete('category');
-    else params.set('category', value);
-    const query = params.toString();
-    router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    params.set('category', value);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   if (tabs.length <= 1) return null;
@@ -30,7 +31,7 @@ export default function CatalogFilters({
   return (
     <div className="no-scrollbar -mx-5 flex gap-7 overflow-x-auto border-b hairline px-5 md:mx-0 md:px-0">
       {tabs.map((tab) => {
-        const isActive = active === tab.slug;
+        const isActive = activeSlug === tab.slug;
         return (
           <button
             key={tab.slug}

@@ -44,23 +44,26 @@ export default async function CatalogPage({
   const dict = getDictionary(typedLocale);
 
   const [all, categories] = await Promise.all([getProducts(), getCategories()]);
-  const products =
-    category && category !== 'all' ? all.filter((p) => p.category === category) : all;
 
-  const counts = all.reduce<Record<string, number>>(
-    (acc, product) => {
-      acc[product.category] = (acc[product.category] ?? 0) + 1;
-      return acc;
-    },
-    { all: all.length }
-  );
+  const counts = all.reduce<Record<string, number>>((acc, product) => {
+    acc[product.category] = (acc[product.category] ?? 0) + 1;
+    return acc;
+  }, {});
 
   // Категории приходят из админки; показываем все видимые (даже пустые).
-  // Скрытые (is_visible=false) в меню не выводим. Вкладки «Все» нет —
-  // повторный клик по активной категории сбрасывает фильтр.
+  // Скрытые (is_visible=false) в меню не выводим.
   const tabs = categories
     .filter((item) => item.is_visible)
     .map((item) => ({ slug: item.slug, label: categoryName(item, typedLocale) }));
+
+  // Каталог всегда показывает ОДНУ категорию — никакого смешанного вида.
+  // По умолчанию открывается первая категория.
+  const activeCategory =
+    category && tabs.some((t) => t.slug === category) ? category : tabs[0]?.slug ?? null;
+
+  const products = activeCategory
+    ? all.filter((p) => p.category === activeCategory)
+    : all;
 
   return (
     <div className="mx-auto max-w-[1400px] px-5 pb-24 pt-28 md:px-10 md:pb-32 md:pt-36">
@@ -78,7 +81,7 @@ export default async function CatalogPage({
 
       <div className="mt-10 md:mt-12">
         <Suspense fallback={<div className="h-9 border-b hairline" />}>
-          <CatalogFilters tabs={tabs} counts={counts} />
+          <CatalogFilters tabs={tabs} counts={counts} active={activeCategory ?? undefined} />
         </Suspense>
       </div>
 
