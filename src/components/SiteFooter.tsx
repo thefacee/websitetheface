@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { getContacts, telLink } from '@/lib/contacts';
 import { getSettings, text } from '@/lib/settings';
 import type { Locale } from '@/i18n/config';
@@ -26,7 +27,14 @@ export default async function SiteFooter({
       <div className="mx-auto max-w-[1400px] px-5 py-16 md:px-10 md:py-24">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <div className="font-display text-[1.6rem] uppercase tracking-[0.22em]">
+            <Image
+              src="/media/logo-mark.png"
+              alt=""
+              width={255}
+              height={240}
+              className="h-16 w-auto"
+            />
+            <div className="mt-4 font-display text-[1.6rem] uppercase tracking-[0.22em]">
               The&nbsp;Face
             </div>
             <p className="mt-4 max-w-xs font-display text-lg italic text-muted">

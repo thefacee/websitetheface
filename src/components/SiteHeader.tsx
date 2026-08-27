@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -55,9 +56,20 @@ export default function SiteHeader({
         <div className="mx-auto flex h-[68px] max-w-[1400px] items-center justify-between px-5 md:px-10">
           <Link
             href={`/${locale}`}
-            className="font-display text-[1.35rem] tracking-[0.2em] uppercase"
+            aria-label="The Face"
+            className="flex items-center gap-2.5"
           >
-            The&nbsp;Face
+            <Image
+              src="/media/logo-mark.png"
+              alt=""
+              width={255}
+              height={240}
+              priority
+              className="h-9 w-auto md:h-10"
+            />
+            <span className="font-display text-[1.2rem] tracking-[0.2em] uppercase md:text-[1.35rem]">
+              The&nbsp;Face
+            </span>
           </Link>
 
           <nav className="hidden items-center gap-9 md:flex">
