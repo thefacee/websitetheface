@@ -51,10 +51,18 @@ export default function SiteHeader({
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
           scrolled || open
             ? 'bg-bone/90 backdrop-blur-md border-b hairline'
-            : 'bg-transparent border-b border-transparent'
+            : 'border-b border-transparent'
         }`}
       >
-        <div className="mx-auto flex h-[68px] max-w-[1400px] items-center justify-between px-5 md:px-10">
+        {/* Мягкая подложка под шапкой — чтобы меню, язык и тема читались
+            над видео/светлыми фото. Цвет подстраивается под тему (bone). */}
+        {!(scrolled || open) && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-bone/95 via-bone/50 to-transparent"
+          />
+        )}
+        <div className="relative mx-auto flex h-[68px] max-w-[1400px] items-center justify-between px-5 md:px-10">
           <Link
             href={`/${locale}`}
             aria-label="The Face"
