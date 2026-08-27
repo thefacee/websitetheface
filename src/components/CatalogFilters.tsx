@@ -18,7 +18,8 @@ export default function CatalogFilters({
 
   const select = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (value === 'all') params.delete('category');
+    // Повторный клик по активной категории (или «all») сбрасывает фильтр.
+    if (value === 'all' || value === active) params.delete('category');
     else params.set('category', value);
     const query = params.toString();
     router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });

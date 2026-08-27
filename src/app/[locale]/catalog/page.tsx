@@ -56,13 +56,11 @@ export default async function CatalogPage({
   );
 
   // Категории приходят из админки; показываем все видимые (даже пустые).
-  // Скрытые (is_visible=false) в меню не выводим.
-  const tabs = [
-    { slug: 'all', label: dict.catalog.filters.all },
-    ...categories
-      .filter((item) => item.is_visible)
-      .map((item) => ({ slug: item.slug, label: categoryName(item, typedLocale) })),
-  ];
+  // Скрытые (is_visible=false) в меню не выводим. Вкладки «Все» нет —
+  // повторный клик по активной категории сбрасывает фильтр.
+  const tabs = categories
+    .filter((item) => item.is_visible)
+    .map((item) => ({ slug: item.slug, label: categoryName(item, typedLocale) }));
 
   return (
     <div className="mx-auto max-w-[1400px] px-5 pb-24 pt-28 md:px-10 md:pb-32 md:pt-36">
