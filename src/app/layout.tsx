@@ -57,7 +57,17 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html
       lang={lang}
       className={`${display.variable} ${body.variable} ${displayAm.variable} ${bodyAm.variable}`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* Ставим тему до отрисовки — без мигания светлого при загрузке тёмной. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();",
+          }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

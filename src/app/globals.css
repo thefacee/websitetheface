@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Тёмная тема включается атрибутом data-theme="dark" на <html>. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
   --color-bone: #f5f2ed;
   --color-bone-dark: #ece7e0;
@@ -16,9 +19,36 @@
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* ---------- тёмная тема: тёплый, мягкий для глаз почти-чёрный ---------- */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bone: #110f0c;       /* фон страницы */
+  --color-bone-dark: #191710;  /* приподнятые поверхности (карточки, футер) */
+  --color-sand: #211d16;       /* плейсхолдеры под фото */
+  --color-clay: #c1ab8c;       /* золотистый акцент */
+  --color-clay-dark: #d0ba97;  /* акцентный текст (курсив, ценники) */
+  --color-ink: #ece6db;        /* основной текст */
+  --color-ink-soft: #cbc4b6;   /* lead-текст */
+  --color-muted: #968c7d;      /* приглушённый текст, кикеры */
+}
+
 @layer base {
   :root {
     color-scheme: light;
+  }
+
+  /* Тёмная тема: хардкод-rgba из светлой темы нужно осветлить. */
+  :root[data-theme="dark"] .hairline {
+    border-color: rgba(236, 230, 219, 0.14);
+  }
+  :root[data-theme="dark"] .field {
+    border-bottom-color: rgba(236, 230, 219, 0.22);
+  }
+  :root[data-theme="dark"] .field::placeholder {
+    color: rgba(190, 182, 168, 0.5);
+  }
+  :root[data-theme="dark"] .btn-ghost {
+    border-color: rgba(236, 230, 219, 0.3);
   }
 
   * {

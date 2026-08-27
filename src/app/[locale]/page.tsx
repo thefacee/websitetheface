@@ -240,7 +240,8 @@ export default async function HomePage({
       </section>
 
       {/* ---------------- CUSTOM CTA ---------------- */}
-      <section className="relative overflow-hidden bg-ink text-bone">
+      {/* Секция всегда тёмная — dark:-переопределения держат её тёмной и в тёмной теме. */}
+      <section className="relative overflow-hidden bg-ink text-bone dark:bg-bone dark:text-ink">
         <div className="grain absolute inset-0 opacity-30">
           <Image
             src="/media/carousel-6.png"
@@ -252,17 +253,17 @@ export default async function HomePage({
         </div>
         <div className="relative mx-auto max-w-[1400px] px-5 py-28 text-center md:px-10 md:py-40">
           <Reveal>
-            <p className="kicker text-bone/60">{dict.custom.kicker}</p>
-            <h2 className="display-lg mx-auto mt-5 max-w-[18ch] text-bone">
+            <p className="kicker text-bone/60 dark:text-ink/60">{dict.custom.kicker}</p>
+            <h2 className="display-lg mx-auto mt-5 max-w-[18ch] text-bone dark:text-ink">
               {dict.custom.title}
             </h2>
-            <p className="lead mx-auto mt-6 max-w-[48ch] text-bone/75">
+            <p className="lead mx-auto mt-6 max-w-[48ch] text-bone/75 dark:text-ink/75">
               {dict.custom.subtitle}
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <Link
                 href={`/${locale}/custom`}
-                className="btn bg-bone text-ink hover:bg-clay hover:text-ink"
+                className="btn bg-bone text-ink hover:bg-clay hover:text-ink dark:bg-ink dark:text-bone dark:hover:bg-clay dark:hover:text-ink"
               >
                 {dict.hero.ctaSecondary}
               </Link>
@@ -270,7 +271,7 @@ export default async function HomePage({
                 href={site.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn border-bone/35 text-bone hover:bg-bone hover:text-ink"
+                className="btn border-bone/35 text-bone hover:bg-bone hover:text-ink dark:border-ink/35 dark:text-ink dark:hover:bg-ink dark:hover:text-bone"
               >
                 Instagram
               </a>

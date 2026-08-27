@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
+import ThemeToggle from './ThemeToggle';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/dictionaries';
 
@@ -86,10 +87,11 @@ export default function SiteHeader({
             ))}
           </nav>
 
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-4">
             <div className="hidden sm:block">
               <LanguageSwitcher current={locale} />
             </div>
+            <ThemeToggle />
             <button
               type="button"
               onClick={() => setOpen((v) => !v)}
@@ -130,7 +132,10 @@ export default function SiteHeader({
               </Link>
             ))}
           </nav>
-          <LanguageSwitcher current={locale} />
+          <div className="flex items-center justify-between">
+            <LanguageSwitcher current={locale} />
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </>
