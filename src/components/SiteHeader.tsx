@@ -81,7 +81,7 @@ export default function SiteHeader({
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-9 md:flex">
+          <nav className="hidden items-center gap-9 lg:flex">
             {links.map((link) => (
               <Link
                 key={link.href}
@@ -105,7 +105,7 @@ export default function SiteHeader({
               onClick={() => setOpen((v) => !v)}
               aria-label="Menu"
               aria-expanded={open}
-              className="flex h-9 w-9 flex-col items-center justify-center gap-[5px] md:hidden"
+              className="flex h-9 w-9 flex-col items-center justify-center gap-[5px] lg:hidden"
             >
               <span
                 className={`block h-px w-5 bg-ink transition-transform duration-300 ${
@@ -123,7 +123,7 @@ export default function SiteHeader({
       </header>
 
       <div
-        className={`fixed inset-0 z-40 bg-bone transition-all duration-500 md:hidden ${
+        className={`fixed inset-0 z-40 bg-bone transition-all duration-500 lg:hidden ${
           open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
