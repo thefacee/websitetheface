@@ -128,9 +128,9 @@ const en: Dictionary = {
   },
   custom: {
     kicker: 'Custom order',
-    title: 'Your face, in stone',
+    title: 'Your idea, in stone',
     subtitle:
-      'Tell us what you picture. Size, stone, form, interior. The rest is our work.',
+      'Tell us what you have in mind — size, stone, shape. We’ll sketch it, quote it and carve it by hand. The rest is on us.',
     stone: 'Stone',
     stoneOptions: ['Travertine', 'Tuff', 'Basalt', 'Marble', 'Not sure yet'],
     size: 'Approximate size',
