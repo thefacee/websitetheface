@@ -55,11 +55,12 @@ export default async function CatalogPage({
     { all: all.length }
   );
 
-  // Категории приходят из админки; скрытые и пустые в меню не показываем.
+  // Категории приходят из админки; показываем все видимые (даже пустые).
+  // Скрытые (is_visible=false) в меню не выводим.
   const tabs = [
     { slug: 'all', label: dict.catalog.filters.all },
     ...categories
-      .filter((item) => item.is_visible && (counts[item.slug] ?? 0) > 0)
+      .filter((item) => item.is_visible)
       .map((item) => ({ slug: item.slug, label: categoryName(item, typedLocale) })),
   ];
 
