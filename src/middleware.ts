@@ -33,15 +33,10 @@ export async function middleware(request: NextRequest) {
   );
 
   if (!hasLocale) {
-    const accept = request.headers.get('accept-language') || '';
-    const preferred =
-      locales.find((locale) => accept.toLowerCase().startsWith(locale)) ||
-      (accept.toLowerCase().includes('ru') ? 'ru' : null) ||
-      (accept.toLowerCase().includes('hy') ? 'hy' : null) ||
-      defaultLocale;
-
+    // Язык по умолчанию — армянский, независимо от языка браузера.
+    // Посетитель может переключить язык вверху страницы.
     const url = request.nextUrl.clone();
-    url.pathname = `/${preferred}${pathname === '/' ? '' : pathname}`;
+    url.pathname = `/${defaultLocale}${pathname === '/' ? '' : pathname}`;
     return NextResponse.redirect(url);
   }
 
