@@ -1,16 +1,10 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Product } from '@/lib/supabase/types';
 import { localizedMaterial, localizedName, productImage } from '@/lib/products';
 import { formatPrice } from '@/lib/site';
 import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/dictionaries';
-import ProductLight from './ProductLight';
-
-const LIGHT_LABEL: Record<Locale, string> = {
-  hy: 'Լույս',
-  ru: 'Свет',
-  en: 'Light',
-};
 
 export default function ProductCard({
   product,
@@ -30,17 +24,38 @@ export default function ProductCard({
 
   return (
     <Link href={`/${locale}/catalog/${product.slug}`} className="group block">
-      <ProductLight
-        cover={cover}
-        hover={hover}
-        alt={localizedName(product, locale)}
-        priority={priority}
-        badgeLabel={
-          product.status !== 'available' ? dict.catalog.status[product.status] : null
-        }
-        badgeSold={product.status === 'sold'}
-        lightLabel={LIGHT_LABEL[locale]}
-      />
+      <div className="grain relative aspect-[4/5] overflow-hidden bg-bone-dark">
+        <Image
+          src={cover}
+          alt={localizedName(product, locale)}
+          fill
+          priority={priority}
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className={`img-zoom object-cover ${
+            hover ? 'transition-opacity duration-700 group-hover:opacity-0' : ''
+          }`}
+        />
+        {hover && (
+          <Image
+            src={hover}
+            alt=""
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            aria-hidden
+            className="object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+          />
+        )}
+
+        {product.status !== 'available' && (
+          <span
+            className={`absolute left-3 top-3 px-2.5 py-1 text-[9px] uppercase tracking-[0.18em] ${
+              product.status === 'sold' ? 'bg-ink/85 text-bone' : 'bg-bone/85 text-ink'
+            }`}
+          >
+            {dict.catalog.status[product.status]}
+          </span>
+        )}
+      </div>
 
       <div className="mt-3 flex items-baseline justify-between gap-3">
         <h3 className="font-display text-[1.05rem] leading-tight">
